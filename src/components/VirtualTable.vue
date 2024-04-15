@@ -1,6 +1,5 @@
 <template>
   <div>
-  dednebdbedede
     <div class="px-3 d-flex justify-content-between align-items-center mb-2">
       <p class="pt-4" @click="() => updateParams()">
         <span v-if="loadingStep">
@@ -16,7 +15,7 @@
       </p>
       <ColumnSidebar
         v-model="selectedHeaders"
-        :headers="headers"
+        :headers="props.headers"
         :name="name"
         ref="columns"
       />
@@ -114,7 +113,7 @@
           </h2>
           <h2 v-else>Er zijn geen resultaten gevonden</h2>
           <button
-            v-if="(!noFilters && filtersEnabled) && !(Number(items.length) > Number(maxItems))"
+
             class="btn btn-primary"
             @click="() => handleSwitchRef"
           >
@@ -176,7 +175,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, defineProps, defineEmits } from "vue";
+import { ref, computed, onMounted, defineProps, defineEmits, Ref } from "vue";
+import ColumnSidebar from '@/components/ColumnSidebar.vue';
+import { BaseButton, BaseSwitch } from "@/components/argon-core"
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Header } from "@/types";
@@ -269,10 +270,10 @@ const router = useRouter();
 
 const filtersEnabled = ref(true);
 const searchValue = ref("");
-const selected = ref([]);
+const selected: Ref<string[]> = ref([]);
 const selectedHeaders = ref([]);
 const columns = ref()
-const switchRef = ref(null);
+const switchRef = ref();
 
 const handleSwitchRef = () => {
   if (switchRef.value) {
@@ -282,7 +283,7 @@ const handleSwitchRef = () => {
 
 const sortedHeaders = computed((): any[] => {
   const findHeader = (header: Header) =>
-    props.headers.find((label) => header.label == label) || {};
+    props.headers.find((label) => header.label == label.label) || {};
   return selectedHeaders.value.map(findHeader);
 });
 
@@ -290,7 +291,7 @@ const sortedHeaders = computed((): any[] => {
 const itemsAsCSV = () => {
   let csv = sortedHeaders.value.map((header) => header.label).join(",") + "\n";
   const rows = selected.value.map((id) => {
-    const item = props.items.find((i: { id: any; }) => i.id === id);
+    const item: any = props.items.find((i: any) => i.id === id);
     const columns = sortedHeaders.value.map((h) => {
       const column = h.toColumn ? h.toColumn(item) : getProp(h.prop, item);
       return `"${formatColumn(column)}"`;
@@ -383,15 +384,17 @@ const sortBy = (prop: any) => {
 
 const selectAll = (event: Event) => {
   const isChecked = (event.target as HTMLInputElement).checked;
-  selected.value = isChecked ? props.items.map((item: { id: any }) => item.id) : [];
-  emits("selected", selected);
+  selected.value = isChecked
+    ? props.items.map((item: any) => item.id)
+    : [];
+  emits("selected", selected.value);
 };
 
 
 const select = (item: { id: number; }) => {
-  const index = selected.value.indexOf(item.id);
+  const index = selected.value.indexOf(String(item.id));
   if (index > -1) selected.value.splice(index, 1);
-  else selected.value.push(item.id);
+  else selected.value.push(String(item.id));
   emits("selected", selected);
 };
 

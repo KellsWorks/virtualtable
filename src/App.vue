@@ -12,6 +12,7 @@
       :items="products"
       v-model:sort="sort"
       v-model:search="search"
+      @load="load"
     >
       <template #header>
         <!-- <BaseDropdown menu-on-right>
@@ -35,18 +36,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from "vue";
 import VirtualTable from "./components/VirtualTable.vue";
 import NextPurchase from "./components/columns/NextPurchase.vue";
+import axios from "axios"
 // import downloadString from "@/utils/functions";
 // import BaseButton from "@/components/argon-core/BaseButton.vue"
 
 const vt = ref();
 const products = ref([]);
-const params = ref({});
 const search = ref("");
 const appliedFilters = ref({});
 const loading = ref(true);
+const loadingStep = ref("")
+const params = ref({})
 const sort = ref({ prop: "name", direction: "DESC" });
 const selected = ref([]);
 const headers = ref([
@@ -217,6 +220,29 @@ const headers = ref([
 // const showExportQR = () => {
 //   downloadString(vt.value.productsAsQRCSVItem());
 // };
+
+async function load(): Promise<void> {
+  loading.value = true;
+  loadingStep.value = "Producten aan het laden";
+
+  let { data: products } = await axios.get(
+    "https://delivery.nu/products.php",
+    { params }
+  );
+  loading.value = false;
+  loadingStep.value = "Afbeeldingen aan het laden";
+
+  // const { data: uploads } = await $axios.get(`/upload/products`);
+
+  products.map((p: any) => {
+    // const upload = uploads.find(u => u.collectionId === p.id);
+    // p.image = upload ? `${$axios.defaults.baseURL}/upload/${upload.id}/download` : null;
+    return p;
+  });
+}
+onMounted(() => {
+  load();
+});
 </script>
 
 <style>

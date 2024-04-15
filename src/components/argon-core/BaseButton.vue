@@ -2,10 +2,19 @@
   <component
     :is="tag"
     :type="tag === 'button' ? nativeType : ''"
-    :disabled="isDisabled"
+    :disabled="disabled || loading"
     @click="handleClick"
     class="btn"
-    :class="buttonClasses"
+    :class="[
+      { 'rounded-circle': round },
+      { 'btn-block': block },
+      { 'btn-wd': wide },
+      { 'btn-icon btn-fab': icon },
+      { [`btn-${type}`]: type && !outline },
+      { [`btn-${size}`]: size },
+      { [`btn-outline-${type}`]: outline && type },
+      { disabled: disabled && tag !== 'button' }
+    ]"
   >
     <slot name="loading">
       <i v-if="loading" class="fas fa-spinner fa-spin"></i>
@@ -18,59 +27,55 @@
     </template>
   </component>
 </template>
-
-<script setup>
-import { computed, defineProps, defineEmits } from 'vue';
-
-const props = defineProps({
-  tag: {
-    type: String,
-    default: 'button',
+<script>
+export default {
+  name: 'base-button',
+  props: {
+    tag: {
+      type: String,
+      default: 'button',
+      description: 'Button html tag'
+    },
+    round: Boolean,
+    icon: Boolean,
+    block: Boolean,
+    loading: Boolean,
+    wide: Boolean,
+    disabled: {
+      type: Boolean,
+      default: () => false
+    },
+    type: {
+      type: String,
+      default: 'default',
+      description: 'Button type (primary|secondary|danger etc)'
+    },
+    nativeType: {
+      type: String,
+      default: 'button',
+      description: 'Button native type (e.g button, input etc)'
+    },
+    size: {
+      type: String,
+      default: '',
+      description: 'Button size (sm|lg)'
+    },
+    outline: {
+      type: Boolean,
+      description: 'Whether button is outlined (only border has color)'
+    },
+    link: {
+      type: String,
+      description: 'Whether button is a link (no borders or background)'
+    }
   },
-  round: Boolean,
-  icon: Boolean,
-  block: Boolean,
-  loading: Boolean,
-  wide: Boolean,
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  type: {
-    type: String,
-    default: 'default',
-  },
-  nativeType: {
-    type: String,
-    default: 'button',
-  },
-  size: {
-    type: String,
-    default: '',
-  },
-  outline: Boolean,
-  link: String,
-});
-
-const emit = defineEmits(['click']);
-
-const isDisabled = computed(() => props.disabled || props.loading);
-const buttonClasses = computed(() => [
-  { 'rounded-circle': props.round },
-  { 'btn-block': props.block },
-  { 'btn-wd': props.wide },
-  { 'btn-icon btn-fab': props.icon },
-  { [`btn-${props.type}`]: props.type && !props.outline },
-  { [`btn-${props.size}`]: props.size },
-  { [`btn-outline-${props.type}`]: props.outline && props.type },
-  { disabled: props.disabled && props.tag !== 'button' },
-]);
-
-const handleClick = (evt) => {
-  emit('click', evt);
+  methods: {
+    handleClick(evt) {
+      this.$emit('click', evt);
+    }
+  }
 };
 </script>
-
 <style scoped lang="scss">
 .btn {
   display: inline-flex;
