@@ -27,7 +27,7 @@
 </template>
 <script>
   export default {
-    name: "card",
+    name: "cardComponent",
     props: {
       loading: {
         type: Boolean,

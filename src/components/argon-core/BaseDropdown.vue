@@ -7,14 +7,15 @@
   >
     <slot name="title-container" :is-open="isOpen">
       <component
-        :is="titleTag"
+        :is="props.titleTag"
         class="btn-rotate"
-        :class="[{'dropdown-toggle': hasToggle}, titleClasses]"
+        :class="[{ 'dropdown-toggle': hasToggle }, titleClasses]"
         :aria-expanded="isOpen"
         data-toggle="dropdown"
       >
         <slot name="title" :is-open="isOpen">
-          <i :class="icon"></i> {{ title }}
+          <i :class="icon"></i>
+          {{ title }}
         </slot>
       </component>
     </slot>
@@ -23,76 +24,75 @@
       :class="[
         { show: isOpen },
         { 'dropdown-menu-right': menuOnRight },
-        menuClasses
+        menuClasses,
       ]"
     >
       <slot></slot>
     </ul>
   </component>
 </template>
-<script>
-export default {
-  name: 'base-dropdown',
-  props: {
-    tag: {
-      type: String,
-      default: 'div',
-      description: 'Dropdown html tag (e.g div, ul etc)'
-    },
-    titleTag: {
-      type: String,
-      default: 'button',
-      description: 'Dropdown title (toggle) html tag'
-    },
-    title: {
-      type: String,
-      description: 'Dropdown title'
-    },
-    direction: {
-      type: String,
-      default: 'down', // up | down
-      description: 'Dropdown menu direction (up|down)'
-    },
-    icon: {
-      type: String,
-      description: 'Dropdown icon'
-    },
-    titleClasses: {
-      type: [String, Object, Array],
-      description: 'Title css classes'
-    },
-    menuClasses: {
-      type: [String, Object],
-      description: 'Menu css classes'
-    },
-    menuOnRight: {
-      type: Boolean,
-      description: 'Whether menu should appear on the right'
-    },
-    hasToggle: {
-      type: Boolean,
-      description: 'Whether dropdown has arrow icon shown',
-      default: true
-    }
+
+<script setup lang="ts">
+import { ref, defineProps, defineEmits } from "vue";
+
+const props = defineProps({
+  tag: {
+    type: String,
+    default: "div",
+    description: "Dropdown html tag (e.g div, ul etc)",
   },
-  data() {
-    return {
-      isOpen: false
-    };
+  titleTag: {
+    type: String,
+    default: "button",
+    description: "Dropdown title (toggle) html tag",
   },
-  methods: {
-    toggleDropDown() {
-      this.isOpen = !this.isOpen;
-      this.$emit('change', this.isOpen);
-    },
-    closeDropDown(event) {
-      // console.log(event.target);
-      this.isOpen = false;
-      this.$emit('change', false);
-    }
-  }
+  title: {
+    type: String,
+    description: "Dropdown title",
+  },
+  direction: {
+    type: String,
+    default: "down",
+    description: "Dropdown menu direction (up|down)",
+  },
+  icon: {
+    type: String,
+    description: "Dropdown icon",
+  },
+  titleClasses: {
+    type: [String, Object, Array],
+    description: "Title css classes",
+  },
+  menuClasses: {
+    type: [String, Object],
+    description: "Menu css classes",
+  },
+  menuOnRight: {
+    type: Boolean,
+    description: "Whether menu should appear on the right",
+  },
+  hasToggle: {
+    type: Boolean,
+    description: "Whether dropdown has arrow icon shown",
+    default: true,
+  },
+});
+
+const isOpen = ref<boolean>(false);
+
+const toggleDropDown = () => {
+  isOpen.value = !isOpen.value;
+  emit("change", isOpen.value);
 };
+
+const closeDropDown = () => {
+  isOpen.value = false;
+  emit("change", false);
+};
+
+const emit = defineEmits(["change"]);
 </script>
+
 <style lang="scss" scoped>
 .dropdown {
   cursor: pointer;

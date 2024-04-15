@@ -6,17 +6,17 @@
       `badge-${type}`,
       rounded ? `badge-pill` : '',
       circle && 'badge-circle',
-      size ? `badge-${size}` : '',
+      size ? `badge-${props.size}` : '',
     ]"
   >
     <slot>
-      <i v-if="icon" :class="icon"></i>
+      <i v-if="icon" :class="props.icon"></i>
     </slot>
   </component>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { defineProps } from "vue";
 
 const props = defineProps({
   tag: {
