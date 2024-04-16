@@ -39,7 +39,7 @@
     >
       <component
         :to="link.path"
-        @click.native="linkClick"
+        @click="linkClick"
         :is="elementType(link, false)"
         class="nav-link"
         :class="{ active: link.active }"
@@ -57,6 +57,7 @@
     </slot>
   </component>
 </template>
+
 <script>
 import { CollapseTransition } from 'vue3-transitions';
 

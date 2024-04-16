@@ -19,6 +19,7 @@
     "node-sass": "^9.0.0",
     "nouislider": "^15.7.1",
     "sass-loader": "^14.1.1",
+    "vee-validate": "^4.12.6",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
     "vue-draggable-next": "^2.2.1",

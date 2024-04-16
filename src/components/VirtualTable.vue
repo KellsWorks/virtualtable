@@ -178,7 +178,6 @@
 import { ref, computed, onMounted, defineProps, defineEmits, Ref } from "vue";
 import ColumnSidebar from '@/components/ColumnSidebar.vue';
 import { BaseButton, BaseSwitch } from "@/components/argon-core"
-import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { Header } from "@/types";
 import { isValid, parseISO } from 'date-fns';
@@ -265,7 +264,6 @@ const emits = defineEmits([
   'input'
 ]);
 
-const store = useStore();
 const router = useRouter();
 
 const filtersEnabled = ref(true);
@@ -401,7 +399,9 @@ const select = (item: { id: number; }) => {
 const isDev = computed(() => process.env.NODE_ENV !== "production");
 const minWidth = computed(() => (1 / props.headers.length) * 100 + "%;");
 
-const hideModal = () => store.dispatch("modal/hide");
+const hideModal = () => {
+  // store.dispatch("modal/hide")
+};
 
 const updateRoute = () => {
   router.push({

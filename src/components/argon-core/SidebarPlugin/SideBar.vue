@@ -34,7 +34,7 @@
 </template>
 <script>
 export default {
-  name: 'sidebar',
+  name: 'sidebar-component',
   props: {
     title: {
       type: String,
@@ -98,7 +98,7 @@ export default {
     this.$sidebar.isMinimized = this.$sidebar.breakpoint < window.innerWidth
     this.minimizeSidebar()
   },
-  beforeDestroy() {
+  onBeforeUnmount() {
     if (this.$sidebar.showSidebar) {
       this.$sidebar.showSidebar = false;
     }

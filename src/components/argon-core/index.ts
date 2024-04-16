@@ -7,7 +7,7 @@ import BaseButton from "./BaseButton.vue";
 import BaseDropdown from "./BaseDropdown.vue";
 import BaseTable from "./BaseTable.vue";
 
-import Card from "./Cards/Card.vue";
+import BaseCard from "./Cards/BaseCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 import BaseNav from "./Navbar/BaseNav.vue";
 import NavbarToggleButton from "./Navbar/NavbarToggleButton.vue";
@@ -22,13 +22,16 @@ import BasePagination from "./BasePagination.vue";
 
 import SidebarPlugin from "./SidebarPlugin";
 
+import BaseInput from "./inputs/BaseInput.vue";
+
 export {
+  BaseInput,
   BaseSwitch,
   BaseBadge,
   BaseAlert,
   BaseProgress,
   BasePagination,
-  Card,
+  BaseCard,
   StatsCard,
   BaseTable,
   BaseDropdown,

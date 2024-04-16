@@ -2,15 +2,15 @@
   <div v-click-outside="close" ref="sidebar" class="sidebar d-inline-block">
     <transition name="slide">
       <div v-show="isOpen" class="columns-overlay">
-        <card class="h-100 overflow-auto rounded-0">
+        <BaseCard class="h-100 overflow-auto rounded-0">
           <template #header="{ reset, close }">
             <div class="d-flex align-items-center">
               <h3 class="flex-fill mb-0">Kolommen</h3>
-              <base-button type="info" size="sm" @click="reset"
-                >Reset</base-button
+              <BaseButton type="info" size="sm" @click="reset"
+                >Reset</BaseButton
               >
-              <base-button type="warning" size="sm" @click="close"
-                >Sluiten</base-button
+              <BaseButton type="warning" size="sm" @click="close"
+                >Sluiten</BaseButton
               >
             </div>
           </template>
@@ -36,8 +36,8 @@
                   <base-checkbox v-model="column.enabled">{{
                     column.label
                   }}</base-checkbox>
-                  <badge v-if="column.isDefault" type="primary"
-                    >Standaard</badge
+                  <BaseBadge v-if="column.isDefault" type="primary"
+                    >Standaard</BaseBadge
                   >
                 </li>
               </transition-group>
@@ -46,7 +46,7 @@
               Toepassen
             </button>
           </div>
-        </card>
+        </BaseCard>
       </div>
     </transition>
   </div>
@@ -55,6 +55,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, defineProps, defineEmits } from "vue";
 import { VueDraggableNext } from "vue-draggable-next";
+import { BaseButton, BaseBadge, BaseCard } from "@/components/argon-core"
 
 const props = defineProps<{
   name?: string;
