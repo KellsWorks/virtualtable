@@ -1,6 +1,6 @@
 <template>
   <base-input
-    name="sss"
+    name="currency"
     v-bind="$attrs"
     step="0.01"
     type="number"

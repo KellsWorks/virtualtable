@@ -1,5 +1,5 @@
 <template>
-  <validation-provider
+  <ValidationProvider
     ref="form"
     :rules="rules"
     :name="name"
@@ -110,12 +110,13 @@
         ></div>
       </slot>
     </div>
-  </validation-provider>
+  </ValidationProvider>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, defineProps, defineEmits } from 'vue';
 import { useStore } from 'vuex';
+import ValidationProvider from "vee-validate"
 
 const props = defineProps<{
   name: string;
@@ -141,7 +142,7 @@ const emit = defineEmits(['input', 'focus', 'blur', 'appendclick']);
 const store = useStore();
 const focused = ref(false);
 const errors = computed(() => store.getters["errors/errors"]);
-const hasAppendListener = computed(() => !!emit['appendclick']);
+const hasAppendListener = computed(() => !!((emit as any)['appendclick']));
 
 const serverErrors = computed(() => {
   const currentInput = (error: any) => error.property === props.name;

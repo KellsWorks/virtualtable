@@ -175,6 +175,7 @@ import {
   dateFormatISO,
 } from "@/utils/functions";
 import CurrencyInput from "@/components/CurrencyInput.vue";
+import BaseSwitch from "@/components/inputs/BaseSwitch.vue";
 
 const emits = defineEmits(["input"]);
 const props = defineProps({
