@@ -1,15 +1,15 @@
 <template>
-  <ValidationProvider
+  <Form
     ref="form"
     :rules="rules"
     :name="name"
     v-bind="$attrs"
-    v-slot="{ errors, valid, invalid, validated }"
+    v-slot="{ values }"
     tag="div"
   >
     <div
       class="form-group"
-      :class="{ 'is-invalid': validated && invalid, row: inline }"
+      :class="{ 'is-invalid': values.validated && values.invalid, row: inline }"
     >
       <slot name="label">
         <div class="d-flex justify-content-between">
@@ -43,12 +43,12 @@
             ref="input"
             v-on="listeners"
             v-bind="$attrs"
-            :valid="valid"
+            :valid="values.valid"
             :required="required"
             class="form-control"
             :class="[
-              { 'is-valid': valid && validated && successMessage },
-              { 'is-invalid': invalid && validated },
+              { 'is-valid': values.valid && values.validated && successMessage },
+              { 'is-invalid': values.invalid && values.validated },
               inputClasses,
             ]"
           />
@@ -58,13 +58,13 @@
             :disabled="disabled"
             :id="name"
             v-bind="$attrs"
-            :valid="valid"
+            :valid="values.valid"
             :required="required"
             style="resize: none"
             class="form-control"
             :class="[
-              { 'is-valid': valid && validated && successMessage },
-              { 'is-invalid': invalid && validated },
+              { 'is-valid': values.valid && values.validated && successMessage },
+              { 'is-invalid': values.invalid && values.validated },
               inputClasses,
             ]"
           ></textarea>
@@ -98,7 +98,7 @@
         <slot name="infoBlock"></slot>
       </div>
       <slot name="success">
-        <div class="valid-feedback" v-if="valid && validated">
+        <div class="valid-feedback" v-if="values.valid && values.validated">
           {{ successMessage }}
         </div>
       </slot>
@@ -110,13 +110,13 @@
         ></div>
       </slot>
     </div>
-  </ValidationProvider>
+  </Form>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, defineProps, defineEmits } from 'vue';
 import { useStore } from 'vuex';
-import ValidationProvider from "vee-validate"
+import { Form } from "vee-validate";
 
 const props = defineProps<{
   name: string;
@@ -147,6 +147,7 @@ const hasAppendListener = computed(() => !!((emit as any)['appendclick']));
 const serverErrors = computed(() => {
   const currentInput = (error: any) => error.property === props.name;
   const firstConstraintError = (error: any) => Object.values(error.constraints)[0];
+  console.log(errors)
   return errors.value.filter(currentInput).map(firstConstraintError);
 });
 

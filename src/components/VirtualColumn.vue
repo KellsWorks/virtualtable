@@ -65,7 +65,7 @@
           @click.prevent.stop
           @on-change="blur"
         />
-        <base-switch
+        <BaseSwitch
           v-else-if="column.type && column.type.startsWith('bool')"
           ref="inputRef"
           v-model="localValue"
@@ -73,8 +73,8 @@
           on-text="Ja"
           off-text="Nee"
           @changed="blur"
-        ></base-switch>
-        <currency-input
+        ></BaseSwitch>
+        <CurrencyInput
           v-else-if="column.type === 'currency'"
           ref="inputRef"
           v-model="localValue"
