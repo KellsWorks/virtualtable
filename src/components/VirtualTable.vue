@@ -1,9 +1,5 @@
 <template>
-  <div class="shadow rounded">
-    <div class="w-full p-4 border-b flex items-center justify-between">
-      <h3 class="text-lg">Er zijn in totaal 659 resultaten</h3>
-      <div class="flex items-center space-x-3"></div>
-    </div>
+  <div>
     <div class="w-100 flex items-center">
       <div class="virtual__header" v-if="selectable">
         <input type="checkbox" @change="selectAll" class="mx-2" />
