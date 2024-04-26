@@ -1,15 +1,27 @@
 <template>
   <div>
     lorem ipsum dolor sit
-    <VirtualTable :headers="headers" :selectedHeaders="selectedHeaders" :items="items"/>
+    <VirtualTable
+      :headers="headers"
+      :selectedHeaders="selectedHeaders"
+      :items="items"
+      v-bind:sort="sort"
+      @update:sort="updateSort"
+      @update:params="updateParams"
+      @update:router="updateRouter"
+      :loading="loading"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import VirtualTable from "@/components/VirtualTable.vue";
 import "./style.css";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+import NextPurchase from "@/components/columns/NextPurchase.vue";
 import axios from "axios";
+
+const sort = ref<Record<string, string>>({ prop: "name", direction: "DESC" });
 
 const headers = [
   {
@@ -107,6 +119,7 @@ const headers = [
     label: "Volgende Levering",
     sort: "nextPurchase.delivery_date",
     prop: "nextPurchase",
+    component: NextPurchase,
   },
   {
     editable: true,
@@ -171,18 +184,26 @@ const headers = [
     prop: "b2b_full_price",
   },
 ];
-const selectedHeaders = ["Naam", "SKU", "Montagekosten", "Handelingskosten"];
+const selectedHeaders = [
+  "Naam",
+  "SKU",
+  "Montagekosten",
+  "Handelingskosten",
+  "Publiek",
+  "Volgende Levering",
+  "Dozen",
+];
 const items = ref([]);
 const loading = ref<boolean>(false);
 const loadingStep = ref<string>("");
+const params = ref()
 async function load() {
-  const params = {};
   loading.value = true;
   loadingStep.value = "Producten aan het laden";
 
   const { data: products } = await axios.get(
     "https://delivery.nu/products.php",
-    { params }
+    { params: params.value }
   );
   loading.value = false;
   loadingStep.value = "Afbeeldingen aan het laden";
@@ -193,6 +214,22 @@ async function load() {
     return p;
   });
 }
+
+const updateSort = (value: Record<string, string>) => {
+  sort.value = value;
+};
+
+const updateParams = (value: any) => {
+  console.log(value);
+}
+
+const updateRouter = (value: any) => {
+  console.log(value);
+}
+
+watch(params, () => {
+  load();
+})
 
 onMounted(() => {
   load();

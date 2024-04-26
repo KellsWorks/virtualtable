@@ -19,12 +19,11 @@
       >
         <span>{{ header.label }}</span>
         <template v-if="header.prop && header.prop === sort.prop">
-          <i
-            class="fa mx-2"
-            :class="{
-              'fa-chevron-up': sort.direction === 'ASC',
-              'fa-chevron-down': sort.direction !== 'ASC',
-            }"
+          <fa-icon
+            class="fa mx-2 w-4 h-4"
+            :icon="
+              sort.direction === 'ASC' ? 'fa-chevron-up' : 'fa-chevron-down'
+            "
           />
         </template>
       </div>
@@ -76,10 +75,10 @@
 
 <script setup lang="ts">
 import { Header } from "@/types";
-import { defineProps, defineEmits, computed, ref } from "vue";
+import { defineProps, defineEmits, computed, ref, watch, toRefs } from "vue";
 import VirtualColumn from "./VirtualColumn.vue";
 
-const emits = defineEmits(["update:sort", "update:selected", "input"]);
+const emits = defineEmits(["update:sort", "update:selected", "input", "update:params", "update:search", "update:router"]);
 const props = defineProps({
   name: String,
   noSearch: Boolean,
@@ -134,6 +133,11 @@ const props = defineProps({
 });
 
 const selected = ref();
+const searchTimeout = ref();
+const filtersEnabled = ref<boolean>(true);
+const searchValue = ref<string>("")
+const { sort, filters, items } = toRefs(props);
+
 
 const sortedHeaders = computed(() => {
   const findHeader = (headerLabel: string) => {
@@ -185,6 +189,86 @@ const select = (item: any): void => {
 
   emits("update:selected", selected.value);
 };
+
+const clone = (data: any): any => {
+  return typeof data === "undefined"
+    ? undefined
+    : JSON.parse(JSON.stringify(data));
+};
+
+const updateRoute = () => {
+  emits("update:router", {
+      search: searchValue.value,
+      filters: String(filtersEnabled.value),
+    })
+};
+
+const updateParams = () => {
+  const params : any = filtersEnabled.value ? clone(props.filters) : {};
+
+  params.search = searchValue.value;
+  params.sort = props.sort.prop;
+  params.order = props.sort.direction;
+
+  emits("update:params", params);
+  selected.value = [];
+  emits("update:selected", []);
+  updateRoute();
+};
+
+watch(
+  (sort),
+  () => {
+    if (!searchTimeout.value) {
+      updateParams();
+    }
+  }
+);
+
+watch(
+  filtersEnabled,
+  () => {
+    if (!searchTimeout.value) {
+      updateParams();
+    }
+  },
+  { deep: true }
+);
+
+watch(
+  (filters),
+  () => {
+    if (!searchTimeout.value) {
+      updateParams();
+    }
+  },
+  { deep: true }
+);
+
+watch(
+  (items),
+  () => {
+    if (!searchTimeout.value) {
+      setTimeout(() => {
+
+      }, 100);
+    }
+  },
+  { deep: true }
+);
+
+watch(
+  searchValue,
+  () => {
+    if (searchTimeout.value) clearTimeout(searchTimeout.value);
+    searchTimeout.value = setTimeout(() => {
+      emits("update:search", searchValue.value);
+      updateParams();
+      searchTimeout.value = null;
+    }, 1000);
+  },
+  { deep: true }
+);
 </script>
 
 <style>
